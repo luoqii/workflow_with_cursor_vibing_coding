@@ -5,6 +5,7 @@
 ## 功能
 - 主界面包含提示文字和一个 Material Button。
 - 点击按钮后，页面中央的文本会更新为 "hello world"。
+- 提供英语、简体中文、西班牙语、法语、德语、日语 6 种界面与问候语文本，并通过 `localeConfig` 支持 Android 13+ 的每应用语言设置。
 
 ## 运行方式
 1. 安装 [Android Studio](https://developer.android.com/studio) 并配置 Android SDK（建议 API 34）。

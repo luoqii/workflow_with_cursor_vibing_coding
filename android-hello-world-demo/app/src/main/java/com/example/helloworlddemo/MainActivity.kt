@@ -7,6 +7,7 @@ import com.example.helloworlddemo.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val greetingFormatter = GreetingFormatter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,7 +15,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.displayButton.setOnClickListener {
-            binding.messageText.text = getString(R.string.hello_message)
+            val message = greetingFormatter.formatDefaultGreeting(
+                getString(R.string.hello_message)
+            )
+            binding.messageText.text = message
         }
     }
 }

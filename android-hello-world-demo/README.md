@@ -18,3 +18,19 @@
 ```
 
 构建产物将在 `app/build/outputs/apk/debug/` 下生成。
+
+## 测试
+
+- 运行 JVM 单元测试，覆盖问候语格式化等纯 Kotlin 逻辑：
+
+  ```bash
+  ./gradlew testDebugUnitTest
+  ```
+
+- 使用 Gradle Managed Device（配置了 Pixel 6 / API 34 镜像）执行基本的界面回归测试：
+
+  ```bash
+  ./gradlew pixel6Api34DebugAndroidTest
+  ```
+
+  首次运行会自动下载系统镜像并创建模拟器，确保宿主机已启用 KVM/Hypervisor。

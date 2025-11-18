@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -38,6 +40,18 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    testOptions {
+        managedDevices {
+            devices {
+                create<ManagedVirtualDevice>("pixel6Api34") {
+                    device = "Pixel 6"
+                    apiLevel = 34
+                    systemImageSource = "google"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -49,4 +63,5 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test:core-ktx:1.6.1")
 }

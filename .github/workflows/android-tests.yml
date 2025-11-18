@@ -36,7 +36,9 @@ jobs:
           yes | sdkmanager --channel=3 --install \
             "platforms;android-34" \
             "build-tools;34.0.0" \
-            "platform-tools"
+            "platform-tools" \
+            "emulator" \
+            "system-images;android-34;google_apis;x86_64"
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
@@ -50,3 +52,6 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+
+      - name: Run managed device instrumentation tests
+        run: ./gradlew pixel6Api34DebugAndroidTest

@@ -18,3 +18,18 @@
 ```
 
 构建产物将在 `app/build/outputs/apk/debug/` 下生成。
+
+## 测试
+- 本地单元测试（Robolectric）：验证按钮点击后文本是否更新。
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+- Gradle Managed Device 仪器化测试（首次执行会自动下载 Pixel 6 API 34 映像，需已安装 Android SDK）：
+
+```bash
+./gradlew pixel6Api34DebugAndroidTest
+```
+
+Managed Device 会复用 `app/src/androidTest` 下的 Espresso 用例，在云端/本地自动创建虚拟设备后执行。

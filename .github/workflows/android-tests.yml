@@ -56,8 +56,73 @@ jobs:
         with:
           build-root-directory: android-hello-world-demo
 
-      - name: Run unit tests
-        run: ./gradlew test
+        - name: Run unit tests
+          run: ./gradlew test
 
-      - name: Run managed device instrumentation tests
-        run: ./gradlew pixel6Api34DebugAndroidTest
+        - name: Run managed device instrumentation tests
+          run: ./gradlew pixel6Api34DebugAndroidTest
+
+        - name: Collect test reports
+          if: always()
+          id: collect_reports
+          run: |
+            rm -rf ci-reports
+            UNIT_SRC="app/build/reports/tests"
+            ANDROID_DST="ci-reports/androidTest"
+            UNIT_DST="ci-reports/unit"
+
+            if [ -d "$UNIT_SRC" ]; then
+              mkdir -p "$UNIT_DST"
+              cp -R "$UNIT_SRC"/. "$UNIT_DST"/
+              echo "unit=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "unit=false" >> "$GITHUB_OUTPUT"
+            fi
+
+            ANDROID_INDEX=$(find app/build -type f -path "*/pixel6Api34DebugAndroidTest*/index.html" | head -n 1 || true)
+            if [ -n "$ANDROID_INDEX" ]; then
+              REPORT_DIR=$(dirname "$ANDROID_INDEX")
+              mkdir -p "$ANDROID_DST"
+              cp -R "$REPORT_DIR" "$ANDROID_DST"/
+              echo "android=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "android=false" >> "$GITHUB_OUTPUT"
+            fi
+
+        - name: Upload unit test report
+          if: always() && steps.collect_reports.outputs.unit == 'true'
+          id: upload_unit_report
+          uses: actions/upload-artifact@v4
+          with:
+            name: unit-test-report
+            path: android-hello-world-demo/ci-reports/unit
+            if-no-files-found: warn
+
+        - name: Upload androidTest report
+          if: always() && steps.collect_reports.outputs.android == 'true'
+          id: upload_android_report
+          uses: actions/upload-artifact@v4
+          with:
+            name: android-test-report
+            path: android-hello-world-demo/ci-reports/androidTest
+            if-no-files-found: warn
+
+        - name: 发布测试报告链接
+          if: always()
+          env:
+            UNIT_REPORT_URL: ${{ steps.upload_unit_report.outputs.artifact-url }}
+            ANDROID_REPORT_URL: ${{ steps.upload_android_report.outputs.artifact-url }}
+          run: |
+            {
+              echo "### 📊 测试报告链接"
+              if [ -n "$UNIT_REPORT_URL" ]; then
+                echo "- 单元测试：[$UNIT_REPORT_URL]($UNIT_REPORT_URL)"
+              else
+                echo "- 单元测试：暂无可用报告"
+              fi
+              if [ -n "$ANDROID_REPORT_URL" ]; then
+                echo "- Android Instrumentation 测试：[$ANDROID_REPORT_URL]($ANDROID_REPORT_URL)"
+              else
+                echo "- Android Instrumentation 测试：暂无可用报告"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"

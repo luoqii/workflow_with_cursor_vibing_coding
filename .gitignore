@@ -1,0 +1,59 @@
+## Android/Gradle build artifacts
+**/build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+.cxx/
+.externalNativeBuild/
+captures/
+outputs/
+bin/
+gen/
+out/
+
+## APK/AAB/Bundle outputs
+*.apk
+*.ap_
+*.aab
+*.aar
+*.dex
+
+## IntelliJ / Android Studio files
+*.iml
+.idea/
+*.ipr
+*.iws
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/gradle.xml
+/.idea/libraries
+
+## Local configuration files
+local.properties
+*.keystore
+*.jks
+*.keystore.properties
+keystore.properties
+
+## OS-specific files
+.DS_Store
+Thumbs.db
+
+## Logs & profiling
+*.log
+*.hprof
+
+## IDE temporary files
+*.swp
+*.swo
+*.tmp
+
+## Kotlin/Java build outputs
+*.class
+*.jar
+*.war
+*.ear
+
+## VS Code
+.vscode/

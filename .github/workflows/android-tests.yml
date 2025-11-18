@@ -68,6 +68,8 @@ jobs:
         run: |
           rm -rf ci-reports
           UNIT_SRC="app/build/reports/tests"
+          ANDROID_REPORT_ROOT="app/build/reports/androidTests"
+          ANDROID_RESULT_ROOT="app/build/outputs/androidTest-results"
           ANDROID_DST="ci-reports/androidTest"
           UNIT_DST="ci-reports/unit"
 
@@ -79,11 +81,20 @@ jobs:
             echo "unit=false" >> "$GITHUB_OUTPUT"
           fi
 
-          ANDROID_INDEX=$(find app/build -type f -path "*/pixel6Api34DebugAndroidTest*/index.html" | head -n 1 || true)
-          if [ -n "$ANDROID_INDEX" ]; then
-            REPORT_DIR=$(dirname "$ANDROID_INDEX")
-            mkdir -p "$ANDROID_DST"
-            cp -R "$REPORT_DIR" "$ANDROID_DST"/
+          ANDROID_HAS_REPORT=false
+          if [ -d "$ANDROID_REPORT_ROOT" ]; then
+            mkdir -p "$ANDROID_DST/html"
+            cp -R "$ANDROID_REPORT_ROOT"/. "$ANDROID_DST/html"/
+            ANDROID_HAS_REPORT=true
+          fi
+
+          if [ -d "$ANDROID_RESULT_ROOT" ]; then
+            mkdir -p "$ANDROID_DST/raw"
+            cp -R "$ANDROID_RESULT_ROOT"/. "$ANDROID_DST/raw"/
+            ANDROID_HAS_REPORT=true
+          fi
+
+          if [ "$ANDROID_HAS_REPORT" = true ]; then
             echo "android=true" >> "$GITHUB_OUTPUT"
           else
             echo "android=false" >> "$GITHUB_OUTPUT"
@@ -121,7 +132,7 @@ jobs:
               echo "- 单元测试：暂无可用报告"
             fi
             if [ -n "$ANDROID_REPORT_URL" ]; then
-              echo "- Android Instrumentation 测试：[$ANDROID_REPORT_URL]($ANDROID_REPORT_URL)"
+              echo "- Android Instrumentation 测试：[$ANDROID_REPORT_URL]($ANDROID_REPORT_URL)（HTML 入口：html/index.html，原始 XML：raw/）"
             else
               echo "- Android Instrumentation 测试：暂无可用报告"
             fi

@@ -50,3 +50,6 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+
+      - name: Run managed device instrumentation tests
+        run: ./gradlew pixel6Api34DebugAndroidTest
